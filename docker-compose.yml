@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  node-server:
+    container_name: node-server
+    image: node:alpine
+    tty: true
+    command: sh -c "sh"
+    volumes:
+      - .:/home/node
+    expose:
+      - 3000
+    networks:
+      - fc-app
+
+  db:
+    container_name: postgres-db
+    image: postgres
+    networks:
+      - fc-app
+
+  nginx:
+    container_name: reverse-proxy
+    image: nginx
+    ports:
+      - 8080:80
+    networks:
+      - fc-app
+
+networks:
+  fc-app:
+    driver: bridge
