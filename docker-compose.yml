@@ -1,30 +1,42 @@
 version: '3.8'
 services:
   node-server:
-    container_name: node-server
+    container_name: node-app
+    restart: always
     image: node:alpine
     tty: true
-    command: sh -c "sh"
+    command: sh -c "npm install && npm start"
+    working_dir: /home/node
     volumes:
-      - .:/home/node
-    expose:
-      - 3000
+      - ./node:/home/node
+    ports:
+      - 3000:3000
     networks:
       - fc-app
 
   db:
-    container_name: postgres-db
-    image: postgres
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_ROOT_PASSWORD=root
     networks:
       - fc-app
 
-  nginx:
-    container_name: reverse-proxy
-    image: nginx
-    ports:
-      - 8080:80
-    networks:
-      - fc-app
+  # nginx:
+  #   container_name: reverse-proxy
+  #   build: ./nginx
+  #   ports:
+  #     - 8080:80
+  #   networks:
+  #     - fc-app
 
 networks:
   fc-app:
