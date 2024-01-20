@@ -1,12 +1,14 @@
 version: '3.8'
 services:
-  node-server:
+  node-app:
     container_name: node-app
     restart: always
-    image: node:alpine
+    build: ./node
     tty: true
+    entrypoint: dockerize -wait tcp://db:3306 --timeout 30s docker-entrypoint.sh
     command: sh -c "npm install && npm start"
-    working_dir: /home/node
+    depends_on:
+      - db
     volumes:
       - ./node:/home/node
     ports:
@@ -20,8 +22,8 @@ services:
     container_name: db
     restart: always
     tty: true
-    ports:
-      - 3306:3306
+    expose:
+      - 3306
     volumes:
       - ./mysql:/var/lib/mysql
     environment:
@@ -30,13 +32,13 @@ services:
     networks:
       - fc-app
 
-  # nginx:
-  #   container_name: reverse-proxy
-  #   build: ./nginx
-  #   ports:
-  #     - 8080:80
-  #   networks:
-  #     - fc-app
+  nginx:
+    container_name: reverse-proxy
+    build: ./nginx
+    ports:
+      - 8080:80
+    networks:
+      - fc-app
 
 networks:
   fc-app:
