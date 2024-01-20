@@ -1,18 +1,22 @@
 const express = require('express')
 const app = express()
 const port = 3000
-const db = require('./db')
+const db = require('./dbUseCases')
 
 db.createTable('people')
 
 app.get('/', async function (_req, res) {
-  await db.addUser('Username');
+  await db.addUser('User');
   const users = await db.getAllUsers();
   res.send(`
     <h1>Full Cycle Rocks!</h1>
-    ${users.map(user => {
-      return `<span> ${user.name}</span>`
-    })}
+    <ul>
+      ${
+        users.map(user => {
+          return `<li> ${user.name} ${user.id}</li>`
+        }).join('')
+      }
+    </ul>
   `);
 });
 

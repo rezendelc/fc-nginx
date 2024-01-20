@@ -34,11 +34,9 @@ async function createTable(tableName) {
 
 async function getAllUsers() {
   const connection = createConnection()
-  const sql = `SELECT name FROM people;`
+  const sql = `SELECT id,name FROM people;`
   const users = await connection.query(sql);
   await connection.end();
-  
-  console.log(users)
 
   return users;
 }
