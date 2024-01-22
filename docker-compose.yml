@@ -34,7 +34,10 @@ services:
 
   nginx:
     container_name: reverse-proxy
-    build: ./nginx
+    # build: ./nginx
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - 8080:80
     networks:
